@@ -15,7 +15,7 @@ import objc
 from GlyphsApp import *
 from GlyphsApp.plugins import *
 
-class showCoordinates(ReporterPlugin):
+class showMoreCoordinates(ReporterPlugin):
 
 	def settings(self):
 		self.menuName = Glyphs.localize({'en': u'Coordinates', 'es': u'Coordenadas'})
@@ -35,7 +35,7 @@ class showCoordinates(ReporterPlugin):
 				if thisNode.type == "curve" or "line" and thisNode.type != "offcurve":
 					x = int(round(thisNode.position.x))
 					y = int(round(thisNode.position.y))
-					self.drawText( thisLayer, str(x)+ ", " + str(y), (x, y), 10.0, fontColor1 )
+					self.drawText( thisLayer, str(x)+ ", " + str(y), (x, y), 7.0, fontColor1 )
 					#print "rect"
 
 				if thisNode.type == "offcurve" and thisNode.nextNode.type != "offcurve":
@@ -45,8 +45,19 @@ class showCoordinates(ReporterPlugin):
 					y1 = thisNode.position.y
 					y2 = thisNode.nextNode.position.y
 					deltaY = int(round(y1-y2))
-					self.drawText( thisLayer, str(deltaX)+ ", " + str(deltaY), (x1, y1), 10.0, fontColor2 )
+					self.drawText( thisLayer, str(deltaX)+ ", " + str(deltaY), (x1, y1), 7.0, fontColor2 )
 					#print "next offcurve"
+
+				if thisNode.type == "curve" or "line" and thisNode.type != "offcurve":
+					x1 = thisNode.position.x
+					x2 = thisNode.nextNode.position.x
+					deltaX = int(round(x1-x2))
+					y1 = thisNode.position.y
+					y2 = thisNode.nextNode.position.y
+					deltaY = int(round(y1-y2))
+					self.drawText( thisLayer, str(deltaX)+ ", " + str(deltaY), ( (x1+x2)*0.5, (y1+y2)*0.5 ), 7.0, fontColor3 )
+					textAlignment = 2
+					#print "segment"
 
 				if thisNode.type == "offcurve" and thisNode.prevNode.type !="offcurve":
 					x1 = thisNode.position.x
@@ -55,7 +66,7 @@ class showCoordinates(ReporterPlugin):
 					y1 = thisNode.position.y
 					y2 = thisNode.prevNode.position.y
 					deltaY = int(round(y1-y2))
-					self.drawText( thisLayer, str(deltaX)+ ", " + str(deltaY), (x1, y1), 10.0, fontColor2 )
+					self.drawText( thisLayer, str(deltaX)+ ", " + str(deltaY), (x1, y1), 7.0, fontColor2 )
 					#print "pre off "	
 
 
@@ -69,7 +80,7 @@ class showCoordinates(ReporterPlugin):
 				NSFontAttributeName: NSFont.labelFontOfSize_( fontSize/currentZoom ),
 				NSForegroundColorAttributeName: fontColor }
 			displayText = NSAttributedString.alloc().initWithString_attributes_( text, fontAttributes )
-			textAlignment = 0 # top left: 6, top center: 7, top right: 8, center left: 3, center center: 4, center right: 5, bottom left: 0, bottom center: 1, bottom right: 2
+			textAlignment = 7 # top left: 6, top center: 7, top right: 8, center left: 3, center center: 4, center right: 5, bottom left: 0, bottom center: 1, bottom right: 2
 			glyphEditView.drawText_atPoint_alignment_( displayText, textPosition, textAlignment )
 
 		except Exception as e:
